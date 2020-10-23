@@ -23,7 +23,7 @@ public class UserController {
         this.userService = userService;
     }
 
-    // Получить пользователей без ролей
+    // Получить всех пользователей без ролей
     @RequestMapping(value = "/getAllUser", method = RequestMethod.GET)
     public String getAllUsers(){
         List<User> users = userService.getAll();
@@ -35,10 +35,12 @@ public class UserController {
     public String  setNewUser(@RequestBody UserRoleDTO userRoleDTO){
         User user = userRoleDTO.getUser();
         String userRole = userRoleDTO.getRole();
+
         try {
             userService.register(user, userRole);
         }catch (IllegalArgumentException e){
             e.printStackTrace();
+            return "Invalid login or password";
         }
 
         return "New user added\n" + user.toString();

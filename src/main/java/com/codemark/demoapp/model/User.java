@@ -34,11 +34,12 @@ public class User extends BaseEntity{
 
     public User() {}
 
-    public User(String mail, String name, String surname) {
+    public User(String mail, String name, String surname, String password) {
         Date date = new Date();
         this.setCreated(date);
         this.setUpdated(date);
         this.setStatus(Status.ACTIVE);
+        this.password = password;
         this.mail = mail;
         this.name = name;
         this.surname = surname;

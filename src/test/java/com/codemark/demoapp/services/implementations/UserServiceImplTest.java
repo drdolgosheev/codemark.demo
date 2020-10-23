@@ -55,12 +55,13 @@ class UserServiceImplTest {
         // Проверяем что пользователя нет
         assertFalse(userRepository.existsByMail(email));
 
-        // Регестрируем
+        // Регистрируем
         userService.register(test_user, role);
 
         // Проверяем, что теперь он есть
         assertTrue(userRepository.existsByMail(email));
 
+        // Чистим репозиторий
         userRepository.delete(test_user);
     }
 
@@ -68,7 +69,7 @@ class UserServiceImplTest {
     void delete() {
         test_user = new User(email, name, surname, password);
 
-        // Регестрируем
+        // Регистрируем
         userService.register(test_user, role);
 
         // Проверяем что все хорошо
@@ -77,7 +78,7 @@ class UserServiceImplTest {
         // Удаляем пользователя
         userService.delete(test_user.getUserId());
 
-        // Проверяем что все работает
+        // Чистим репозиторий
         assertFalse(userRepository.existsByMail(email));
 
     }

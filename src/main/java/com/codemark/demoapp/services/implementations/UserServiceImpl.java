@@ -9,6 +9,8 @@ import com.codemark.demoapp.services.validators.EmailValidator;
 import com.codemark.demoapp.services.validators.PasswordValidator;
 import com.codemark.demoapp.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.support.NullValue;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -48,14 +50,15 @@ public class UserServiceImpl implements UserService {
         List<UserRole> roles = new ArrayList<>();
         roles.add(role);
 
-        // Проверяем логин и пароль
+        // Проверяем логин (работает, если хотите можно раскоментировать)
         /**
         if(!checkEmail(user.getMail()))
             throw new IllegalArgumentException("Не корретктый логин");
+         */
 
+        // Проверяем пароль
         if(!checkPassword(user.getPassword()))
             throw new IllegalArgumentException("Не корретктый пароль");
-        */
 
         Date date = new Date();
         user.setCreated(date);
@@ -64,16 +67,12 @@ public class UserServiceImpl implements UserService {
         user.setRoles(roles);
         User newUser = userRepository.save(user);
 
-
-//        new Logger(Level.INFO,"New user added: " + user.toString());
-
         return newUser;
     }
 
     @Override
     public List<User> getAll() {
         List<User> users = userRepository.findAll();
-//        logger.log(Level.INFO, "Found", users);
         return users;
     }
 
@@ -83,7 +82,7 @@ public class UserServiceImpl implements UserService {
         try {
             user = userRepository.findUserByMail(email);
         } catch (Exception e) {
-//            logger.log(Level.WARNING, "No user found");
+            throw new IllegalArgumentException("Данного пользователя не существует");
         }
         return user;
     }
@@ -94,7 +93,7 @@ public class UserServiceImpl implements UserService {
         try {
             user = userRepository.findByUserId(id);
         }catch (Exception e){
-//            logger.log(Level.WARNING, "No user found");
+            throw new IllegalArgumentException("Данного пользователя не существует");
         }
         return user;
     }
@@ -104,9 +103,8 @@ public class UserServiceImpl implements UserService {
         try {
             userRepository.deleteById(id);
         }catch (Exception e){
-//            logger.log(Level.WARNING, "User does not exist");
+            throw new IllegalArgumentException("Данного пользователя не существует");
         }
-//        logger.log(Level.INFO, "User deleted");
     }
 
     @Override

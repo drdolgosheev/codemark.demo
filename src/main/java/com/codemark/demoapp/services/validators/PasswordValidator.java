@@ -13,7 +13,7 @@ public class PasswordValidator {
      * Нет пробелов табуляций и т.д.
       */
     private static final String PASSWORD_PATTERN =
-            "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,}$\n";
+            "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,}$";
 
     public PasswordValidator() {
         pattern = Pattern.compile(PASSWORD_PATTERN);

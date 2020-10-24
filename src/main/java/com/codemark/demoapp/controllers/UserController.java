@@ -4,6 +4,7 @@ import com.codemark.demoapp.dto.UserRoleDTO;
 import com.codemark.demoapp.model.User;
 import com.codemark.demoapp.model.UserRole;
 import com.codemark.demoapp.services.UserService;
+import net.bytebuddy.asm.Advice;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -49,7 +50,13 @@ public class UserController {
     // Получение пользователя с ролями
     @RequestMapping(value= "/findUserById", method = RequestMethod.GET)
     public String getUser(@RequestBody int userId){
-        User user = userService.findById(userId);
+        User user;
+        try {
+            user = userService.findById(userId);
+        }catch (IllegalArgumentException e){
+            e.printStackTrace();
+            return "No user with such id";
+        }
         List<UserRole> roles = user.getRoles();
         return user.toString() + "\nRoles: " + roles.toString();
     }
@@ -57,7 +64,12 @@ public class UserController {
     // Удаление пользователя
     @RequestMapping(value= "/deleteUserById", method = RequestMethod.DELETE)
     public String deleteUser(@RequestBody int userId) {
-        userService.delete(userId);
+        try {
+            userService.delete(userId);
+        }catch (IllegalArgumentException e){
+            e.printStackTrace();
+            return "No user with such id";
+        }
         return "User was deleted";
     }
 

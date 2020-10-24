@@ -26,7 +26,6 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
 
-
     @Autowired
     public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository) {
         this.userRepository = userRepository;
@@ -35,20 +34,18 @@ public class UserServiceImpl implements UserService {
 
     // Все поля обязательные для заполнения
     @Override
-    public User register(User user, String roleName) {
-
-        UserRole role;
-
-        // Если роль существует находим, если нет, создаем новую
-        if(roleRepository.existsByRoleName(roleName))
-            role = roleRepository.findUserRoleByRoleName(roleName);
-        else {
-            role = new UserRole(roleName);
-            roleRepository.save(role);
-        }
+    public User register(User user, List<String> roleNames) {
 
         List<UserRole> roles = new ArrayList<>();
-        roles.add(role);
+
+        for (int i = 0; i < roleNames.size(); i++) {
+            if(roleRepository.existsByRoleName(roleNames.get(i)))
+                roles.add(roleRepository.findUserRoleByRoleName(roleNames.get(i)));
+            else {
+                roles.add(new UserRole(roleNames.get(i)));
+                roleRepository.save(roles.get(i));
+            }
+        }
 
         // Проверяем логин (работает, если хотите можно раскоментировать)
         /**
@@ -68,6 +65,35 @@ public class UserServiceImpl implements UserService {
         User newUser = userRepository.save(user);
 
         return newUser;
+    }
+
+    @Override
+    public User editUser(User user, List<String> roleNames) {
+        List<UserRole> roles = new ArrayList<>();
+
+        for (int i = 0; i < roleNames.size(); i++) {
+            if(roleRepository.existsByRoleName(roleNames.get(i)))
+                roles.add(roleRepository.findUserRoleByRoleName(roleNames.get(i)));
+            else {
+                roles.add(new UserRole(roleNames.get(i)));
+                roleRepository.save(roles.get(i));
+            }
+        }
+
+        User user_old = userRepository.findUserByMail(user.getMail());
+        try {
+            user_old.setRoles(roles);
+            user_old.setMail(user.getMail());
+            user_old.setName(user.getName());
+            user_old.setSurname(user.getSurname());
+            user_old.setPassword(user.getPassword());
+        }catch (Exception e){
+            throw new IllegalArgumentException("Не все данные заполнены!");
+        }
+
+        userRepository.save(user_old);
+
+        return user_old;
     }
 
     @Override

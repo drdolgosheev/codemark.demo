@@ -11,7 +11,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-class EmailValidatorTest {
+class PasswordValidatorTest {
 
     @Test
     void validate() {

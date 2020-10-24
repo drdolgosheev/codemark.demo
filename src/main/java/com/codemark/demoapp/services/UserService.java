@@ -5,7 +5,7 @@ import com.codemark.demoapp.model.User;
 import java.util.List;
 
 public interface UserService {
-    User register(User user, String roleName);
+    User register(User user, List<String> rolesNames);
 
     List<User> getAll();
 
@@ -18,4 +18,6 @@ public interface UserService {
     boolean checkEmail(String email);
 
     boolean checkPassword(String password);
+
+    User editUser(User user, List<String> roleNames);
 }

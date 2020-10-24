@@ -35,7 +35,7 @@ public class UserController {
     @RequestMapping(value = "/setNewUser", method = RequestMethod.POST)
     public String  setNewUser(@RequestBody UserRoleDTO userRoleDTO){
         User user = userRoleDTO.getUser();
-        String userRole = userRoleDTO.getRole();
+        List<String> userRole = userRoleDTO.getRoles();
 
         try {
             userService.register(user, userRole);
@@ -71,6 +71,23 @@ public class UserController {
             return "No user with such id";
         }
         return "User was deleted";
+    }
+
+    // Изменения пользователя
+    @RequestMapping(value = "/editUser", method = RequestMethod.POST)
+    public String editUser(@RequestBody UserRoleDTO userRoleDTO){
+
+        User user = userRoleDTO.getUser();
+        List<String> userRole = userRoleDTO.getRoles();
+
+        try {
+            userService.editUser(user,userRole);
+        }catch (IllegalArgumentException e){
+            e.printStackTrace();
+            return "Please put full information about user";
+        }
+
+        return "User edited\n" + user.toString();
     }
 
 }
